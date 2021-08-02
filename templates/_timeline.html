@@ -1,15 +1,16 @@
 <ul class="timeline" id="timeline">
 {% for repo in repos %}
 <li>
-  <div class="{{forloop.counter|direction-class}}">
+  <div class="{{ loop.cycle('direction-l', 'direction-r')}}">
     <div class="flag-wrapper">
-      <span class="flag"><a target="_blank" href="{{repo.html--url}}">{{repo.name}}</a></span>
-      <span class="time-wrapper"><span class="time">{{repo.created--at|format-date}}</span></span>
+      <span class="flag"><a target="_blank" href="{{ repo.html_url }}">{{repo.name}}</a></span>
+      <span class="time-wrapper"><span class="time">{{repo.created_at|format_date}}</span></span>
     </div>
     <div class="desc">{{repo.description}}</div>
   </div>
 </li>
 {% endfor %}
+<li>Item from timeline - PRIMARY</li>
 </ul>
 <button class="button" type="button" _="on click toggle [@disabled=true] until htmx:afterOnLoad" hx-get="/more?user={{user}}&page=2" hx-swap="outerHTML" hx-indicator="#indicator1">Fetch More</button>
 <div id="indicator1" class="htmx-indicator">

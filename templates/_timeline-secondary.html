@@ -1,10 +1,10 @@
 <ul class="timeline">
 {% for repo in repos %}
 <li>
-  <div class="{{forloop.counter|direction-class}}">
+  <div class="{{ loop.cycle('direction-l', 'direction-r')}}">
     <div class="flag-wrapper">
-      <span class="flag"><a target="_blank" href="{{repo.html--url}}">{{repo.name}}</a></span>
-      <span class="time-wrapper"><span class="time">{{repo.created--at|format-date}}</span></span>
+      <span class="flag"><a target="_blank" href="{{ repo.html_url }}">{{repo.name}}</a></span>
+      <span class="time-wrapper"><span class="time">{{repo.created_at|format_date}}</span></span>
     </div>
     <div class="desc">{{repo.description}}</div>
   </div>
