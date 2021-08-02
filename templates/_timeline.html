@@ -10,7 +10,6 @@
   </div>
 </li>
 {% endfor %}
-<li>Item from timeline - PRIMARY</li>
 </ul>
 <button class="button" type="button" _="on click toggle [@disabled=true] until htmx:afterOnLoad" hx-get="/more?user={{user}}&page=2" hx-swap="outerHTML" hx-indicator="#indicator1">Fetch More</button>
 <div id="indicator1" class="htmx-indicator">
