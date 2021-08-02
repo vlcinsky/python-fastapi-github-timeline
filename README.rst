@@ -1,15 +1,15 @@
 ==========================
 py-fastapi-github-timeline
 ==========================
-Rewrite of Common Lisp htmx app [cl-github-timeline](https://github.com/fukamachi/ningle) into Python using FastAPI.
+Rewrite of Common Lisp htmx app [cl-github-timeline](https://github.com/fukamachi/ningle) into Python using FastAPI_.
 
-This project tries to prove, that with htmx_, templating of page components (using e.g. jinja2) becomes more important than the actual framework serving HTTP requests and it shall be relatively easy to rewrite the app from one language/framework to another.
+This project tries to prove, that with htmx_, templating of page components (using e.g. jinja2_) becomes more important than the actual framework serving HTTP requests and it shall be relatively easy to rewrite the app from one language/framework to another.
 
 .. image:: cl-github-timeline.gif
 
 Concepts
 ========
-htmx_ based application. Components of page are generated on backend and updated on the page using htmx javascript code.
+htmx_ based application. Components of page are generated on backend and updated on the page using htmx_ javascript code.
 
 Installation
 ============
@@ -38,3 +38,9 @@ or using invoke. First list available commands::
 and then run it::
 
   $ inv app-run
+
+
+.. _htmx: https://htmx.org
+.. _poetry: https://python-poetry.org/
+.. _jinja2: https://palletsprojects.com/p/jinja/
+.. _FastAPI: https://fastapi.tiangolo.com/
