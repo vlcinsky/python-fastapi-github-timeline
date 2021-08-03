@@ -40,6 +40,9 @@
   .button[disabled] {
     cursor: not-allowed;
   }
+  .big-text {
+    font-size: 2em;
+  }
 
   footer {
     margin-top: 2em;
@@ -306,12 +309,20 @@
       <form>
         <label for="txtUsername">Github user name:</label>
         <input id="txtUsername" name="user" type="text"  class="input-field"/>
-        <button hx-post="/repos" hx-target="#timeline" hx-indicator="#indicator" class="button" type="submit" _="on click toggle [@disabled=true] until htmx:afterOnLoad">Generate Timeline</button>
+        <button
+          hx-post="/repos"
+          hx-target="#timeline"
+          hx-swap="innerHTML"
+          hx-indicator="#indicator-top"
+          class="button"
+          type="submit"
+          _="on click toggle [@disabled=true] until htmx:afterOnLoad">Generate Timeline</button>
       </form>
-      <div id="indicator" class="htmx-indicator">
+      <div id="indicator-top" class="htmx-indicator">
         <h3>Loading repos, please wait...</h3>
       </div>
-      <ul id="timeline"></ul>
+      <div id="timeline"></div>
+      <div id="load-more"></div>
       <footer>
         <a href="https://github.com/vlcinsky/py-fastapi-github-timeline">GitHub</a>
         <a href="https://github.com/rajasegar/cl-github-timeline">(forked from cl-github-timeline)</a>
