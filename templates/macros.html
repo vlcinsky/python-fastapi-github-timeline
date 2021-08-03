@@ -1,0 +1,63 @@
+{% macro user_input_form(user="", user_not_found=False) %}
+{% set input_class = "input-field" if user_not_found else "input-filed error" %}
+      <form id="user-input-form" hx-swap-oob="true"
+          hx-post="/repos"
+          hx-target="#timeline"
+          hx-swap="innerHTML"
+          hx-indicator="#indicator-top"
+        >
+        <label for="txtUsername">Github user name:</label>
+        <input
+          id="txtUsername"
+          name="user" type="text" value="{{ user }}"
+          required minlength="1"
+          class="{{ input_class }}"/>
+        <button
+          class="button"
+          type="submit"
+          _="on click toggle [disabled='true'] for 8s"
+          >Generate Timeline</button>
+          {% if user_not_found %}
+          <div class="error-message">User with name {{ user }} not found.</div>
+          {% endif %}
+        <div id="indicator-top" class="htmx-indicator">
+          <h3>Loading repos, please wait...</h3>
+        </div>
+      </form>
+{% endmacro %}
+
+{% macro load_more(user, next_page=0) %}
+  {% if next_page %}
+  <div id="load-more" hx-swap-oob="true">
+    <button class="button" type="button"
+      _="on click toggle [@disabled=true] until htmx:afterOnLoad"
+      hx-get="/more?user={{user}}&page={{next_page}}"
+      hx-target="#timeline" hx-swap="beforeend"
+      hx-indicator="#indicator-bottom">Fetch More</button>
+    <div id="indicator-bottom" class="htmx-indicator">
+      <h3>Loading repos, please wait...</h3>
+    </div>
+  </div>
+  {% else %}
+  <div id="load-more" hx-swap-oob="true">
+    <button class="button" type="button" _="on click toggle .big-text">That's all Folks!</button>
+  </div>
+  {% endif %}
+{% endmacro %}
+
+
+{% macro timeline(repos) %}
+  <ul class="timeline">
+  {% for repo in repos %}
+  <li>
+    <div class="{{ loop.cycle('direction-r', 'direction-l')}}">
+      <div class="flag-wrapper">
+        <span class="flag"><a target="_blank" href="{{ repo.html_url }}">{{repo.name}}</a></span>
+        <span class="time-wrapper"><span class="time">{{repo.created_at|format_date}}</span></span>
+      </div>
+      <div class="desc">{{repo.description}}</div>
+    </div>
+  </li>
+  {% endfor %}
+  </ul>
+{% endmacro %}

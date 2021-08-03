@@ -12,6 +12,7 @@ requests = "^2.26.0"
 uvicorn = "^0.14.0"
 python-multipart = "^0.0.5"
 pendulum = "^2.1.2"
+yarl = "^1.6.3"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.3"

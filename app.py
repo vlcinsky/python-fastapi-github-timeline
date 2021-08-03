@@ -1,8 +1,10 @@
 import pendulum
 import requests
+import uvicorn
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from yarl import URL
 
 app = FastAPI()
 GITHUB_REPOS_PER_PAGE = 30
@@ -18,9 +20,13 @@ templates = Jinja2Templates(directory="templates")
 templates.env.filters["format_date"] = format_date
 
 
-def get_repos(user, page=1, per_page=GITHUB_REPOS_PER_PAGE):
-    """Fetch info about GitHub user repos"""
-    print(f"get_repos: user: {user} page: {page}")
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+
+def repos_response(request: Request, user: str, page: int = 1):
+    per_page = GITHUB_REPOS_PER_PAGE
     url = f"https://api.github.com/users/{user}/repos"
     params = {
         "sort": "created",
@@ -28,42 +34,40 @@ def get_repos(user, page=1, per_page=GITHUB_REPOS_PER_PAGE):
         "page": page,
         "per_page": per_page,
     }
-    return requests.get(url, params=params).json()
-
-
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    resp = requests.get(url, params=params)
+    next_page = None
+    if resp.ok:
+        if resp.links:
+            next_url = resp.links.get("next", {}).get("url")
+            if next_url:
+                next_page = URL(next_url).query.get("page")
+        repos = resp.json()
+        user_not_found = False
+    else:
+        repos = []
+        user_not_found = True
+    return templates.TemplateResponse(
+        "_timeline.html",
+        {
+            "request": request,
+            "user": user,
+            "repos": repos,
+            "next_page": next_page,
+            "per_page": per_page,
+            "user_not_found": user_not_found,
+        },
+    )
 
 
 @app.post("/repos", response_class=HTMLResponse)
 def repos(request: Request, user: str = Form(...)):
-    page = 1
-    per_page = GITHUB_REPOS_PER_PAGE
-    repos = get_repos(user, page)
-    return templates.TemplateResponse(
-        "_timeline.html",
-        {
-            "request": request,
-            "user": user,
-            "repos": repos,
-            "page": page + 1,
-            "per_page": per_page,
-        },
-    )
+    return repos_response(request, user, page=1)
 
 
 @app.get("/more", response_class=HTMLResponse)
 def more(request: Request, user: str, page: int):
-    per_page = GITHUB_REPOS_PER_PAGE
-    repos = get_repos(user, page, per_page)
-    return templates.TemplateResponse(
-        "_timeline.html",
-        {
-            "request": request,
-            "user": user,
-            "repos": repos,
-            "page": page + 1,
-            "per_page": per_page,
-        },
-    )
+    return repos_response(request, user, page)
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
