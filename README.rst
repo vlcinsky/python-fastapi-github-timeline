@@ -1,5 +1,5 @@
 ==========================
-py-fastapi-github-timeline
+python-fastapi-github-timeline
 ==========================
 Rewrite of Common Lisp htmx_ app _cl-github-timeline into Python using FastAPI_.
 
