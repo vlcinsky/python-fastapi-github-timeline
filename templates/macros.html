@@ -1,5 +1,5 @@
 {% macro user_input_form(user="", user_not_found=False) %}
-{% set input_class = "input-field" if user_not_found else "input-filed error" %}
+{% set input_class = "input-field error" if user_not_found else "input-filed" %}
       <form id="user-input-form" hx-swap-oob="true"
           hx-post="/repos"
           hx-target="#timeline"
@@ -15,7 +15,7 @@
         <button
           class="button"
           type="submit"
-          _="on click toggle [disabled='true'] for 8s"
+          _="on click toggle [disabled='true'] for 2s"
           >Generate Timeline</button>
           {% if user_not_found %}
           <div class="error-message">User with name {{ user }} not found.</div>
